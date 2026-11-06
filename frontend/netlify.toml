@@ -10,7 +10,7 @@
   # Vite 7 needs Node 20.19 or newer
   NODE_VERSION = "22"
 
-# Rate limit: each visitor IP gets at most 60 requests per minute to this
+# Rate limit: each visitor IP gets at most 45 requests per minute to this
 # site. A first visit is about 12 requests (page, scripts, styles, example
 # data), and later pages reuse cached files, so normal use stays well under
 # it. Over the limit, Netlify serves rate-limited.html instead of the
@@ -27,6 +27,6 @@
   [redirects.rate_limit]
     action = "rewrite"
     to = "/rate-limited.html"
-    window_limit = 60
+    window_limit = 45
     window_size = 60
     aggregate_by = ["ip", "domain"]
