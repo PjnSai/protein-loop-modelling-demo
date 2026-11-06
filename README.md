@@ -12,13 +12,13 @@ backend, so it can be hosted for free.
 
 ## What is live and what is pre-computed
 
-| Feature | In this demo |
-|---|---|
-| PDB lookup | **Live.** Any 4-character code is downloaded from the RCSB Protein Data Bank and parsed in the browser (title, method, resolution, chains, residue ranges) |
-| 3D viewing | **Live.** 3Dmol.js and NGL, with cartoon, line, stick and sphere styles |
-| Segment selection and parameter form | **Live.** Target phi/psi angles, constraints and conflict checking |
-| Modelling result | **Pre-computed.** Shown only for the verified example: 1ADG chain A, residues 290–301, with the parameters from the original run. Any other input explains that live modelling isn't available. |
-| Accounts, dashboard and activity log | **Demo account.** "Continue as demo user" opens the dashboard, activity log and profile with sample data, kept in the browser tab only |
+| Feature                              | In this demo                                                                                                                                                                                    |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PDB lookup                           | **Live.** Any 4-character code is downloaded from the RCSB Protein Data Bank and parsed in the browser (title, method, resolution, chains, residue ranges)                                      |
+| 3D viewing                           | **Live.** 3Dmol.js and NGL, with cartoon, line, stick and sphere styles                                                                                                                         |
+| Segment selection and parameter form | **Live.** Target phi/psi angles, constraints and conflict checking                                                                                                                              |
+| Modelling result                     | **Pre-computed.** Shown only for the verified example: 1ADG chain A, residues 290–301, with the parameters from the original run. Any other input explains that live modelling isn't available. |
+| Accounts, dashboard and activity log | **Demo account.** "Continue as demo user" opens the dashboard, activity log and profile with sample data, kept in the browser tab only                                                          |
 
 To see the verified result: **Loop Modelling → 1ADG A:290-301 → Fetch Structure → Continue to
 Parameters → Enter These Parameters → Show Pre-computed Result**.
@@ -87,3 +87,11 @@ frontend/
 - Structure data from the [RCSB Protein Data Bank](https://www.rcsb.org/).
 - [3Dmol.js](https://3dmol.org/) (BSD-3-Clause), [NGL Viewer](https://nglviewer.org/) (MIT)
   and [Bootstrap](https://getbootstrap.com/) (MIT).
+
+## Licence
+
+This project is licensed under [CC BY-NC 4.0](LICENSE). You may download, run and adapt the code for non-commercial purposes, as long as you give credit and state any changes. Commercial use is not permitted.
+
+If this project inspires your own work, a mention is appreciated.
+
+The MATLAB files in `backend/matlab_code/` are the work of Dr Steven Hayward and are not covered by this licence.
