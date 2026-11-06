@@ -1,0 +1,137 @@
+import { FaCrosshairs, FaRedo, FaExpand, FaCompress } from "react-icons/fa";
+
+const ViewerControls = ({
+  viewerType,
+  representation,
+  isLoading,
+  viewerReady,
+
+  selectedChain,
+  segmentStart,
+  segmentEnd,
+  isModelledStructure,
+
+  isExpanded,
+
+  onSwitchViewer,
+  onChangeRepresentation,
+  onCentreView,
+  onResetViewer,
+  onToggleExpanded,
+
+  showControls,
+}) => {
+  if (!showControls) {
+    return null;
+  }
+
+  const availableStyles = ["cartoon", "line", "stick", "sphere"];
+
+  return (
+    <div className="card-header bg-light">
+      <div className="row align-items-center">
+        <div className="col-md-7">
+          <div className="btn-group btn-group-sm me-3" role="group">
+            <button
+              type="button"
+              className={`btn ${viewerType === "ngl" ? "btn-primary" : "btn-outline-primary"}`}
+              onClick={() => onSwitchViewer("ngl")}
+              disabled={isLoading}
+              title="NGL Viewer - Advanced molecular graphics"
+            >
+              NGL
+            </button>
+            <button
+              type="button"
+              className={`btn ${viewerType === "3dmol" ? "btn-primary" : "btn-outline-primary"}`}
+              onClick={() => onSwitchViewer("3dmol")}
+              disabled={isLoading}
+              title="3DMol Viewer - Fast rendering"
+            >
+              3Dmol
+            </button>
+          </div>
+          <div className="btn-group btn-group-sm me-3" role="group">
+            {availableStyles.map((style) => (
+              <button
+                key={style}
+                type="button"
+                className={`btn ${representation === style ? "btn-secondary" : "btn-outline-secondary"}`}
+                onClick={() => onChangeRepresentation(style)}
+                disabled={isLoading || !viewerReady}
+                title={`Show ${style} representation`}
+              >
+                {style.charAt(0).toUpperCase() + style.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="col-md-5 text-end">
+          <button
+            className={`btn btn-sm me-2 ${isExpanded ? "btn-warning" : "btn-outline-warning"}`}
+            onClick={onToggleExpanded}
+            disabled={isLoading}
+            title={
+              isExpanded ? "Collapse to normal size" : "Expand for larger view"
+            }
+          >
+            {isExpanded ? (
+              <>
+                <FaCompress className="me-1" />
+                Collapse
+              </>
+            ) : (
+              <>
+                <FaExpand className="me-1" />
+                Expand
+              </>
+            )}
+          </button>
+          <button
+            className="btn btn-outline-primary btn-sm me-2"
+            onClick={onCentreView}
+            disabled={isLoading || !viewerReady}
+            title="Centre View"
+          >
+            <FaCrosshairs className="me-1" />
+            Centre
+          </button>
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            onClick={onResetViewer}
+            disabled={isLoading}
+            title="Reset Viewer"
+          >
+            <FaRedo className="me-1" />
+            Reset
+          </button>
+        </div>
+      </div>
+      <div className="mt-2">
+        <small className="text-muted">
+          Status:
+          {isLoading && <span className="text-warning ms-1">Loading...</span>}
+          {!isLoading && viewerReady && (
+            <span className="text-success ms-1">Ready</span>
+          )}
+          {!isLoading && !viewerReady && (
+            <span className="text-danger ms-1">Error</span>
+          )}
+          {viewerReady && (
+            <span className="ms-2">
+              {viewerType.toUpperCase()} • {representation}
+              {selectedChain && ` • Chain ${selectedChain}`}
+              {segmentStart &&
+                segmentEnd &&
+                ` • Segment ${segmentStart}-${segmentEnd}`}
+              {isModelledStructure && ` • Modelled Structure`}
+              {isExpanded && ` • Expanded View`}
+            </span>
+          )}
+        </small>
+      </div>
+    </div>
+  );
+};
+
+export default ViewerControls;

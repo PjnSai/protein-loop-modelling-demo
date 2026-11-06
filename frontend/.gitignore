@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.env.*
+
+# Local test structures (not deployed)
+test-data

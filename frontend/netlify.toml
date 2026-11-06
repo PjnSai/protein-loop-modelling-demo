@@ -1,0 +1,32 @@
+# Netlify settings for the static demo.
+# This file lives in the frontend folder, so set the site's "Base directory"
+# to "frontend" in Netlify. "publish" below is relative to that folder.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 7 needs Node 20.19 or newer
+  NODE_VERSION = "22"
+
+# Rate limit: each visitor IP gets at most 60 requests per minute to this
+# site. A first visit is about 12 requests (page, scripts, styles, example
+# data), and later pages reuse cached files, so normal use stays well under
+# it. Over the limit, Netlify serves rate-limited.html instead of the
+# requested file. This protects the free plan's monthly credits (bandwidth
+# and requests) from scripted overuse. App routes such as /dashboard are
+# matched first by public/_redirects; every file they load (JavaScript, CSS,
+# viewer libraries) still passes through this rule.
+[[redirects]]
+  from = "/*"
+  to = "/:splat"
+  status = 200
+  force = true
+
+  [redirects.rate_limit]
+    action = "rewrite"
+    to = "/rate-limited.html"
+    window_limit = 60
+    window_size = 60
+    aggregate_by = ["ip", "domain"]

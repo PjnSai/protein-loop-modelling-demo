@@ -1,0 +1,185 @@
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
+
+import ResetPasswordForm from "../components/forms/ResetPasswordForm";
+
+import { resetPassword } from "../api/auth";
+
+import { validatePassword } from "../utils/validators";
+
+const ResetPassword = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  const token = searchParams.get("token");
+  const email = searchParams.get("email");
+
+  useEffect(() => {
+    if (!token || !email) {
+      setError("Invalid reset link. Please request a new password reset.");
+    }
+  }, [token, email]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    if (error) setError(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { password, confirmPassword } = formData;
+
+    const error = validatePassword(password, confirmPassword);
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { ok, data } = await resetPassword(email, token, password);
+
+      if (ok) {
+        setSuccess(true);
+        setTimeout(() => navigate("/login"), 3000);
+      } else {
+        setError(data.error || "Password reset failed");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6 col-lg-4">
+            <div className="card border-0 shadow">
+              <div className="card-body text-center p-5">
+                <div className="text-success mb-3">
+                  <svg
+                    width="64"
+                    height="64"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                  </svg>
+                </div>
+                <h5 className="text-success">Password Reset Successful!</h5>
+                <p className="text-muted">
+                  Your password has been updated. Redirecting to login page...
+                </p>
+                <div className="spinner-border spinner-border-sm text-primary mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!token || !email) {
+    return (
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6 col-lg-4">
+            <div className="card border-0 shadow">
+              <div className="card-body text-center p-5">
+                <div className="text-danger mb-3">
+                  <svg
+                    width="64"
+                    height="64"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+                  </svg>
+                </div>
+                <h5 className="text-danger">Invalid Reset Link</h5>
+                <p className="text-muted">
+                  This password reset link is invalid or has expired.
+                </p>
+                <div className="mt-4">
+                  <Link to="/request-reset" className="btn btn-primary">
+                    Request New Reset Link
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-4">
+          <div className="card border-0 shadow">
+            <div className="card-body p-5">
+              <div className="text-center mb-4">
+                <div className="text-primary mb-3">
+                  <svg
+                    width="48"
+                    height="48"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zM3 6v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zM5 8a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0V8zm4 0a1 1 0 1 1 2 0v2a1 1 0 1 1-2 0V8z" />
+                  </svg>
+                </div>
+                <h3 className="fw-bold text-primary">Set New Password</h3>
+                <p className="text-muted">Enter your new password below</p>
+              </div>
+              <ResetPasswordForm
+                formData={formData}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+                error={error}
+              />
+              <div className="text-center mt-4">
+                <Link to="/login" className="text-muted text-decoration-none">
+                  ← Back to Login
+                </Link>
+              </div>
+              <div className="mt-4 p-3 bg-light rounded">
+                <small className="text-muted">
+                  <strong>Password Requirements:</strong>
+                  <ul className="mb-0 mt-1">
+                    <ul className="mb-0 mt-1">
+                      <li>
+                        At least 8 characters, and not easy to guess (e.g. avoid
+                        common words or patterns)
+                      </li>
+                      <li>Should not be found in known data breaches</li>
+                      <li>Use a mix of letters, numbers, and symbols</li>
+                    </ul>
+                  </ul>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ResetPassword;
